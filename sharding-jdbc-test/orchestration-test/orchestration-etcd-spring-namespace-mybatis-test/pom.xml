@@ -23,7 +23,7 @@
     <parent>
         <groupId>io.shardingsphere</groupId>
         <artifactId>orchestration-test</artifactId>
-        <version>4.0.0-RC1</version>
+        <version>4.0.0-RC2-SNAPSHOT</version>
     </parent>
     <artifactId>orchestration-etcd-spring-namespace-mybatis-test</artifactId>
 
