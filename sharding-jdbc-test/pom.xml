@@ -15,6 +15,7 @@
         <module>sharding-test</module>
         <module>orchestration-test</module>
         <module>jdbc-performance-test</module>
+        <module>jdbc-onlinebank-test</module>
     </modules>
 
     <dependencies>
