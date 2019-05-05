@@ -15,16 +15,22 @@
  * limitations under the License.
  */
 
-package io.shardingsphere.example.jdbc.onlinebank;
+package io.shardingsphere.example.jdbc.onlinebank.service;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.transaction.jta.JtaAutoConfiguration;
+import java.sql.SQLException;
 
-@SpringBootApplication(exclude = JtaAutoConfiguration.class)
-public class SpringBootStarterExample {
+/**
+ * Online banking service
+ *
+ * @author zhaojun
+ */
+public interface OnlineBankingService {
     
-    public static void main(final String[] args) {
-        SpringApplication.run(SpringBootStarterExample.class, args);
-    }
+    void initEnvironment() throws SQLException;
+    
+    void cleanEnvironment() throws SQLException;
+    
+    void transferMoney();
+    
+    void checkDataConsistency();
 }
