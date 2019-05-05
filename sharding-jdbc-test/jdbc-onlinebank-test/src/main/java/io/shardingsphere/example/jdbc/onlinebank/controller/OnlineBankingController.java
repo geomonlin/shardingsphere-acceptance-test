@@ -19,6 +19,7 @@ package io.shardingsphere.example.jdbc.onlinebank.controller;
 
 import io.shardingsphere.example.jdbc.onlinebank.service.OnlineBankingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,6 +50,18 @@ public final class OnlineBankingController {
     @RequestMapping(value = "/init")
     public String init() throws SQLException {
         onlineBankingService.initEnvironment();
+        return "ok";
+    }
+    
+    /**
+     * Transfer money.
+     * @param count execute count
+     * @return string
+     * @throws SQLException SQL exception
+     */
+    @RequestMapping(value = "/transfer/{count}")
+    public String transferMoney(final @PathVariable("count") int count) throws SQLException {
+        onlineBankingService.transferMoney(count);
         return "ok";
     }
     

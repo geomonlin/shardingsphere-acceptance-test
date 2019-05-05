@@ -30,7 +30,7 @@ public interface OnlineBankingService {
     
     void cleanEnvironment() throws SQLException;
     
-    void transferMoney();
+    void transferMoney(int count) throws SQLException;
     
     void checkDataConsistency();
 }
