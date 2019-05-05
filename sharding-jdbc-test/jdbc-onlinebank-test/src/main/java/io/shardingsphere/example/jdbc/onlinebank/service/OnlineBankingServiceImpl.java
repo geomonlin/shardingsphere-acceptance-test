@@ -18,6 +18,8 @@
 package io.shardingsphere.example.jdbc.onlinebank.service;
 
 import org.apache.shardingsphere.core.strategy.keygen.SnowflakeShardingKeyGenerator;
+import org.apache.shardingsphere.transaction.core.TransactionType;
+import org.apache.shardingsphere.transaction.core.TransactionTypeHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -74,26 +76,38 @@ public final class OnlineBankingServiceImpl implements OnlineBankingService {
     
     @Override
     public void transferMoney(final int count) throws SQLException {
+        Map<String, Object> accounts = prepareAccountPair();
+        doTransferMoney(count, accounts);
+    }
+    
+    private Map<String, Object> prepareAccountPair() throws SQLException {
+        Map<String, Object> result = new HashMap<>();
+        TransactionTypeHolder.set(TransactionType.XA);
         try (Connection connection = dataSource.getConnection()) {
-            Map<String, Object> accounts = getAccountsPair(connection);
+            connection.setAutoCommit(false);
+            Long customerNo = insertCustomer(connection);
+            result.put("debit_customer_no", customerNo);
+            result.put("debit_account_no", insertAccount(connection, customerNo));
+            customerNo = insertCustomer(connection);
+            result.put("credit_customer_no", customerNo);
+            result.put("credit_account_no", insertAccount(connection, customerNo));
+            connection.commit();
+        }
+        return result;
+    }
+    
+    private void doTransferMoney(final int count, final Map<String, Object> accounts) throws SQLException {
+        TransactionTypeHolder.set(TransactionType.XA);
+        try (Connection connection = dataSource.getConnection()) {
             for (int i = 0; i < count; i++) {
+                connection.setAutoCommit(false);
                 Long flowNo = insertJournal(connection, accounts);
                 updateAccount(connection, accounts);
                 insertBill(connection, flowNo, accounts);
                 updateJournal(connection, flowNo, accounts);
+                connection.commit();
             }
         }
-    }
-    
-    private Map<String, Object> getAccountsPair(final Connection connection) throws SQLException {
-        Map<String, Object> result = new HashMap<>();
-        Long customerNo = insertCustomer(connection);
-        result.put("debit_customer_no", customerNo);
-        result.put("debit_account_no", insertAccount(connection, customerNo));
-        customerNo = insertCustomer(connection);
-        result.put("credit_customer_no", customerNo);
-        result.put("credit_account_no", insertAccount(connection, customerNo));
-        return result;
     }
     
     private Long insertCustomer(final Connection connection) throws SQLException {

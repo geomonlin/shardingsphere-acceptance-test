@@ -60,7 +60,7 @@ class SQLConstant {
         ")";
     
     static final String createBill = "CREATE TABLE IF NOT EXISTS bill (" +
-        "flowno varchar(19) not null             comment '流水号'," +
+        "flowno BIGINT not null             comment '流水号'," +
         "flowdate date not null                  comment '日期'," +
         "account_no varchar(19) not null              comment '账号'," +
         "debitamount decimal(18,2) not null      comment '借方发生额'," +
@@ -78,7 +78,7 @@ class SQLConstant {
         ")";
     
     static final String createJournal = "CREATE TABLE IF NOT EXISTS journal (" +
-        "flowno varchar(19)      not null      comment '流水号'," +
+        "flowno BIGINT not null      comment '流水号'," +
         "flowdate date not null                comment '日期'," +
         "amount decimal(18,2) not null         comment '发生额'," +
         "debitacc BIGINT not null         comment '借方账号'," +
