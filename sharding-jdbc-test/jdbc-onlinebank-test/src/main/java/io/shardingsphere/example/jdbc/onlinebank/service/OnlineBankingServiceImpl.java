@@ -76,13 +76,22 @@ public final class OnlineBankingServiceImpl implements OnlineBankingService {
     
     @Override
     public void transferMoney(final int count) throws SQLException {
+        TransactionTypeHolder.set(TransactionType.XA);
         Map<String, Object> accounts = prepareAccountPair();
-        doTransferMoney(count, accounts);
+        try (Connection connection = dataSource.getConnection()) {
+            for (int i = 0; i < count; i++) {
+                connection.setAutoCommit(false);
+                Long flowNo = insertJournal(connection, accounts);
+                updateAccount(connection, accounts);
+                insertBill(connection, flowNo, accounts);
+                updateJournal(connection, flowNo, accounts);
+                connection.commit();
+            }
+        }
     }
     
     private Map<String, Object> prepareAccountPair() throws SQLException {
         Map<String, Object> result = new HashMap<>();
-        TransactionTypeHolder.set(TransactionType.XA);
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
             Long customerNo = insertCustomer(connection);
@@ -94,20 +103,6 @@ public final class OnlineBankingServiceImpl implements OnlineBankingService {
             connection.commit();
         }
         return result;
-    }
-    
-    private void doTransferMoney(final int count, final Map<String, Object> accounts) throws SQLException {
-        TransactionTypeHolder.set(TransactionType.XA);
-        try (Connection connection = dataSource.getConnection()) {
-            for (int i = 0; i < count; i++) {
-                connection.setAutoCommit(false);
-                Long flowNo = insertJournal(connection, accounts);
-                updateAccount(connection, accounts);
-                insertBill(connection, flowNo, accounts);
-                updateJournal(connection, flowNo, accounts);
-                connection.commit();
-            }
-        }
     }
     
     private Long insertCustomer(final Connection connection) throws SQLException {
@@ -170,7 +165,7 @@ public final class OnlineBankingServiceImpl implements OnlineBankingService {
         try (PreparedStatement debitStatement = connection.prepareStatement(SQLConstant.insertDebitBill);
              PreparedStatement creditStatement = connection.prepareStatement(SQLConstant.insertCreditBill)) {
             debitStatement.setObject(1, flowNo);
-            debitStatement.setObject(2, accounts.get("debit_customer_no"));
+            debitStatement.setObject(2, accounts.get("debit_account_no"));
             debitStatement.setObject(3, accounts.get("debit_customer_no"));
             debitStatement.execute();
             creditStatement.setObject(1, flowNo);
