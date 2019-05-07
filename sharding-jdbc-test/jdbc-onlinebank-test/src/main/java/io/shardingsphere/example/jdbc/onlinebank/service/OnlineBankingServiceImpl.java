@@ -57,6 +57,10 @@ public final class OnlineBankingServiceImpl implements OnlineBankingService {
     public void initEnvironment() throws SQLException {
         try (Connection connection = dataSource.getConnection();
             Statement statement = connection.createStatement()) {
+            statement.execute(SQLConstant.dropCustomer);
+            statement.execute(SQLConstant.dropAccount);
+            statement.execute(SQLConstant.dropBill);
+            statement.execute(SQLConstant.dropJournal);
             statement.execute(SQLConstant.createCustomer);
             statement.execute(SQLConstant.createAccount);
             statement.execute(SQLConstant.createJournal);
@@ -68,10 +72,10 @@ public final class OnlineBankingServiceImpl implements OnlineBankingService {
     public void cleanEnvironment() throws SQLException {
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
-            statement.execute(SQLConstant.dropCustomer);
-            statement.execute(SQLConstant.dropAccount);
-            statement.execute(SQLConstant.dropBill);
-            statement.execute(SQLConstant.dropJournal);
+            statement.execute(SQLConstant.truncateCustomer);
+            statement.execute(SQLConstant.truncateAccount);
+            statement.execute(SQLConstant.truncateBill);
+            statement.execute(SQLConstant.truncateJournal);
         }
     }
     
