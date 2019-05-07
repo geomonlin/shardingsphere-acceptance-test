@@ -31,6 +31,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -76,8 +77,8 @@ public final class OnlineBankingServiceImpl implements OnlineBankingService {
     
     @Override
     public void transferMoney(final int count) throws SQLException {
-        TransactionTypeHolder.set(TransactionType.XA);
         Map<String, Object> accounts = prepareAccountPair();
+        TransactionTypeHolder.set(TransactionType.XA);
         try (Connection connection = dataSource.getConnection()) {
             for (int i = 0; i < count; i++) {
                 connection.setAutoCommit(false);
@@ -92,6 +93,7 @@ public final class OnlineBankingServiceImpl implements OnlineBankingService {
     
     private Map<String, Object> prepareAccountPair() throws SQLException {
         Map<String, Object> result = new HashMap<>();
+        TransactionTypeHolder.set(TransactionType.LOCAL);
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
             Long customerNo = insertCustomer(connection);
@@ -185,7 +187,69 @@ public final class OnlineBankingServiceImpl implements OnlineBankingService {
     }
     
     @Override
-    public void checkDataConsistency() {
-    
+    public void checkDataConsistency() throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            Map<Long, Double> debitJournal = queryJournalAccount(connection, "select debitacc, sum(amount) from journal GROUP BY debitacc");
+            Map<Long, Double> creditJournal = queryJournalAccount(connection, "select creditacc, sum(amount) from journal GROUP BY creditacc");
+            if (checkDebitAccount(debitJournal, connection) && checkCreditAccount(creditJournal, connection)) {
+                System.out.println("All check PASSED !!");
+            } else {
+                System.out.println("Check FAILED, some account data is not consistency !!");
+            }
+        }
     }
+    
+    private boolean checkDebitAccount(final Map<Long, Double> journalAccounts, final Connection connection) throws SQLException {
+        boolean result = true;
+        for (Map.Entry<Long, Double> entry : journalAccounts.entrySet()) {
+            Double debitAmount = getAmount(entry, connection, "select sum(debitamount) from bill where account_no=?");
+            Double accountRealAmount = getAmount(entry, connection, "select realtimeremain from account where account_no=?");
+            if (debitAmount.equals(entry.getValue()) && accountRealAmount.equals(1000000 + debitAmount)) {
+                System.out.println(String.format("check debit account [%s] PASSED", entry.getKey()));
+            } else {
+                System.out.println(String.format("check debit account [%s] is FAILED, amount:[%s]", entry.getKey(), entry.getValue()));
+                result = false;
+            }
+        }
+        return result;
+    }
+    
+    private boolean checkCreditAccount(final Map<Long, Double> journalAccounts, final Connection connection) throws SQLException {
+        boolean result = true;
+        for (Map.Entry<Long, Double> entry : journalAccounts.entrySet()) {
+            Double creditAmount = getAmount(entry, connection, "select sum(credityield) from bill where account_no=?");
+            Double accountRealAmount = getAmount(entry, connection, "select realtimeremain from account where account_no=?");
+            if (creditAmount.equals(entry.getValue()) && accountRealAmount.equals(1000000 - creditAmount)) {
+                System.out.println(String.format("check credit account [%s] PASSED", entry.getKey()));
+            } else {
+                System.out.println(String.format("check credit account [%s] is FAILED, amount:[%s]", entry.getKey(), entry.getValue()));
+                result = false;
+            }
+        }
+        return result;
+    }
+    
+    private Double getAmount(final Map.Entry<Long, Double> entry, final Connection connection, final String sql) throws SQLException {
+        Double result = (double) 0;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, String.valueOf(entry.getKey()));
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                result = resultSet.getDouble(1);
+            }
+        }
+        return result;
+    }
+    
+    private Map<Long, Double> queryJournalAccount(final Connection connection, final String sql) throws SQLException {
+        Map<Long, Double> result = new TreeMap<>();
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                result.put(resultSet.getLong(1), resultSet.getDouble(2));
+            }
+        }
+        return result;
+    }
+    
 }

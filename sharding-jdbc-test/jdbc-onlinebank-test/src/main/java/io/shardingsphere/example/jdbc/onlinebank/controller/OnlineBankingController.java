@@ -65,6 +65,12 @@ public final class OnlineBankingController {
         return "ok";
     }
     
+    @RequestMapping(value = "/check")
+    public String checkData() throws SQLException {
+        onlineBankingService.checkDataConsistency();
+        return "ok";
+    }
+    
     /**
      * clean.
      *

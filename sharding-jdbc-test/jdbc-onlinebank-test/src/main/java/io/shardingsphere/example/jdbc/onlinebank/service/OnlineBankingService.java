@@ -32,5 +32,5 @@ public interface OnlineBankingService {
     
     void transferMoney(int count) throws SQLException;
     
-    void checkDataConsistency();
+    void checkDataConsistency() throws SQLException;
 }
