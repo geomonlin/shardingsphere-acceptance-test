@@ -20,6 +20,8 @@ package io.shardingsphere.example.jdbc.onlinebank.service;
 import org.apache.shardingsphere.core.strategy.keygen.SnowflakeShardingKeyGenerator;
 import org.apache.shardingsphere.transaction.core.TransactionType;
 import org.apache.shardingsphere.transaction.core.TransactionTypeHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +43,8 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Component
 public final class OnlineBankingServiceImpl implements OnlineBankingService {
+    
+    private final static Logger LOG = LoggerFactory.getLogger(OnlineBankingServiceImpl.class);
     
     private final DataSource dataSource;
     
@@ -209,9 +213,9 @@ public final class OnlineBankingServiceImpl implements OnlineBankingService {
             Double debitAmount = getAmount(entry, connection, "select sum(debitamount) from bill where account_no=?");
             Double accountRealAmount = getAmount(entry, connection, "select realtimeremain from account where account_no=?");
             if (debitAmount.equals(entry.getValue()) && accountRealAmount.equals(1000000 + debitAmount)) {
-                System.out.println(String.format("check debit account [%s] PASSED", entry.getKey()));
+                LOG.info(String.format("check debit account [%s] PASSED", entry.getKey()));
             } else {
-                System.out.println(String.format("check debit account [%s] is FAILED, amount:[%s]", entry.getKey(), entry.getValue()));
+                LOG.info(String.format("check debit account [%s] is FAILED, amount:[%s]", entry.getKey(), entry.getValue()));
                 result = false;
             }
         }
@@ -224,9 +228,9 @@ public final class OnlineBankingServiceImpl implements OnlineBankingService {
             Double creditAmount = getAmount(entry, connection, "select sum(credityield) from bill where account_no=?");
             Double accountRealAmount = getAmount(entry, connection, "select realtimeremain from account where account_no=?");
             if (creditAmount.equals(entry.getValue()) && accountRealAmount.equals(1000000 - creditAmount)) {
-                System.out.println(String.format("check credit account [%s] PASSED", entry.getKey()));
+                LOG.info(String.format("check credit account [%s] PASSED", entry.getKey()));
             } else {
-                System.out.println(String.format("check credit account [%s] is FAILED, amount:[%s]", entry.getKey(), entry.getValue()));
+                LOG.info(String.format("check credit account [%s] is FAILED, amount:[%s]", entry.getKey(), entry.getValue()));
                 result = false;
             }
         }
