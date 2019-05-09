@@ -18,6 +18,7 @@
 package io.shardingsphere.example.jdbc.onlinebank.controller;
 
 import io.shardingsphere.example.jdbc.onlinebank.service.OnlineBankingService;
+import org.apache.shardingsphere.transaction.core.TransactionType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,13 +56,14 @@ public final class OnlineBankingController {
     
     /**
      * Transfer money.
+     * @param type transaction type
      * @param count execute count
      * @return string
      * @throws SQLException SQL exception
      */
-    @RequestMapping(value = "/transfer/{count}")
-    public String transferMoney(final @PathVariable("count") int count) throws SQLException {
-        onlineBankingService.transferMoney(count);
+    @RequestMapping(value = "/transfer/{type}/{count}")
+    public String transferMoney(final @PathVariable("count") int count, final @PathVariable("type") String type) throws SQLException {
+        onlineBankingService.transferMoney(TransactionType.valueOf(type.toUpperCase()), count);
         return "ok";
     }
     

@@ -84,9 +84,9 @@ public final class OnlineBankingServiceImpl implements OnlineBankingService {
     }
     
     @Override
-    public void transferMoney(final int count) throws SQLException {
+    public void transferMoney(final TransactionType transactionType, final int count) throws SQLException {
         Map<String, Object> accounts = prepareAccountPair();
-        TransactionTypeHolder.set(TransactionType.XA);
+        TransactionTypeHolder.set(transactionType);
         try (Connection connection = dataSource.getConnection()) {
             for (int i = 0; i < count; i++) {
                 connection.setAutoCommit(false);

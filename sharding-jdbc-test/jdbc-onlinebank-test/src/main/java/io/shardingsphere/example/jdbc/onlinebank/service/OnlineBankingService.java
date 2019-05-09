@@ -17,6 +17,8 @@
 
 package io.shardingsphere.example.jdbc.onlinebank.service;
 
+import org.apache.shardingsphere.transaction.core.TransactionType;
+
 import java.sql.SQLException;
 
 /**
@@ -30,7 +32,7 @@ public interface OnlineBankingService {
     
     void cleanEnvironment() throws SQLException;
     
-    void transferMoney(int count) throws SQLException;
+    void transferMoney(TransactionType transactionType, int count) throws SQLException;
     
     void checkDataConsistency() throws SQLException;
 }
