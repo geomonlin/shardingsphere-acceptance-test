@@ -200,9 +200,9 @@ public final class OnlineBankingServiceImpl implements OnlineBankingService {
             Map<Long, Double> debitJournal = queryJournalAccount(connection, "select debitacc, sum(amount) from journal GROUP BY debitacc");
             Map<Long, Double> creditJournal = queryJournalAccount(connection, "select creditacc, sum(amount) from journal GROUP BY creditacc");
             if (checkDebitAccount(debitJournal, connection) && checkCreditAccount(creditJournal, connection)) {
-                System.out.println("All check PASSED !!");
+                LOG.info("All check PASSED !!");
             } else {
-                System.out.println("Check FAILED, some account data is not consistency !!");
+                LOG.info("Check FAILED, some account data is not consistency !!");
             }
         }
     }
