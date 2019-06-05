@@ -16,6 +16,7 @@
         <module>orchestration-test</module>
         <module>jdbc-performance-test</module>
         <module>jdbc-onlinebank-test</module>
+        <module>jdbc-poc-test</module>
     </modules>
 
     <dependencies>
