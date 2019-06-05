@@ -18,6 +18,7 @@
 package io.shardingsphere.example.jdbc.poc.domain;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
 /**
@@ -29,10 +30,18 @@ public class RequestResult<T> {
     
     private String status;
     
+    private Collection<String> sql = new LinkedHashSet<>();
+    
     private Collection<T> details = new LinkedList<>();
     
     public RequestResult(final String status) {
         this.status = status;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void add(final RequestResult requestResult) {
+        sql.addAll(requestResult.getSql());
+        details.addAll(requestResult.getDetails());
     }
     
     /**
@@ -56,7 +65,7 @@ public class RequestResult<T> {
         return details;
     }
     
-    public void setDetails(Collection<T> result) {
-        this.details = result;
+    public Collection<String> getSql() {
+        return sql;
     }
 }

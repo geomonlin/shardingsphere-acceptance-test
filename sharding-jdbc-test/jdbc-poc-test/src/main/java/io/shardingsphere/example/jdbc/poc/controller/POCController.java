@@ -67,8 +67,13 @@ public final class POCController {
             OrderItem orderItem = new OrderItem();
             orderItem.setUserId(i);
             orderItem.setStatus("poc-init");
-            result.getDetails().addAll(pocService.insert(order, orderItem).getDetails());
+            result.add(pocService.insert(order, orderItem));
         }
         return result;
+    }
+    
+    @RequestMapping(value = "/query")
+    public RequestResult query(String sql) {
+        return pocService.select(sql);
     }
 }

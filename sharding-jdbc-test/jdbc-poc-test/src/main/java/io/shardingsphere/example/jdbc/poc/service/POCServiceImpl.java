@@ -29,9 +29,9 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,6 +74,23 @@ public class POCServiceImpl implements POCService {
         return createRequestResult(orderItem);
     }
     
+    @Override
+    public RequestResult select(final String sql) {
+        RequestResult<Order> result = new RequestResult<>("OK");
+        result.getDetails().addAll(jdbcTemplate.queryForList(sql, Order.class));
+        return result;
+    }
+    
+    @Override
+    public RequestResult delete(final String sql) {
+        return RequestResult.ok();
+    }
+    
+    @Override
+    public RequestResult update(final String sql) {
+        return RequestResult.ok();
+    }
+    
     @SuppressWarnings("unchecked")
     private RequestResult createRequestResult(final OrderItem orderItem) {
         Map<String, Object> newRecord = new HashMap<>();
@@ -81,6 +98,7 @@ public class POCServiceImpl implements POCService {
         newRecord.put("order_item_id", orderItem.getOrderItemId());
         RequestResult<Map<String, Object>> result = RequestResult.ok();
         result.getDetails().add(newRecord);
+        result.getSql().addAll(Arrays.asList(SQLConstant.INSERT_T_ORDER, SQLConstant.INSERT_T_ORDER_ITEM));
         return result;
     }
     
@@ -113,44 +131,5 @@ public class POCServiceImpl implements POCService {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(orderPrepareStatementCreator, holder);
         orderItem.setOrderItemId(holder.getKey().longValue());
-    }
-    
-    @Override
-    public RequestResult select(final String sql) {
-        return RequestResult.ok();
-    }
-    
-    @Override
-    public RequestResult delete(final String sql) {
-        return RequestResult.ok();
-    }
-    
-    @Override
-    public RequestResult update(final String sql) {
-        return RequestResult.ok();
-    }
-    
-    
-    final void insertItem(final PreparedStatement preparedStatement, final OrderItem orderItem) throws SQLException {
-        preparedStatement.setLong(1, orderItem.getOrderId());
-        preparedStatement.setInt(2, orderItem.getUserId());
-        preparedStatement.setString(3, orderItem.getStatus());
-        preparedStatement.executeUpdate();
-        try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
-            if (resultSet.next()) {
-                orderItem.setOrderItemId(resultSet.getLong(1));
-            }
-        }
-    }
-    
-    final void insertOrder(final PreparedStatement preparedStatement, final Order order) throws SQLException {
-        preparedStatement.setInt(1, order.getUserId());
-        preparedStatement.setString(2, order.getStatus());
-        preparedStatement.executeUpdate();
-        try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
-            if (resultSet.next()) {
-                order.setOrderId(resultSet.getLong(1));
-            }
-        }
     }
 }
