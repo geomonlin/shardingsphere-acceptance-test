@@ -17,6 +17,9 @@
 
 package io.shardingsphere.example.jdbc.poc.domain;
 
+import java.util.Collection;
+import java.util.LinkedList;
+
 /**
  * Request response.
  *
@@ -26,7 +29,7 @@ public class RequestResult<T> {
     
     private String status;
     
-    private T result;
+    private Collection<T> details = new LinkedList<>();
     
     public RequestResult(final String status) {
         this.status = status;
@@ -38,7 +41,7 @@ public class RequestResult<T> {
      * @return request result
      */
     public static RequestResult ok() {
-        return new RequestResult<>("OK");
+        return new RequestResult("OK");
     }
     
     public String getStatus() {
@@ -49,11 +52,11 @@ public class RequestResult<T> {
         this.status = status;
     }
     
-    public T getResult() {
-        return result;
+    public Collection<T> getDetails() {
+        return details;
     }
     
-    public void setResult(final T result) {
-        this.result = result;
+    public void setDetails(Collection<T> result) {
+        this.details = result;
     }
 }

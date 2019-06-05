@@ -22,11 +22,18 @@ import io.shardingsphere.example.jdbc.poc.domain.OrderItem;
 import io.shardingsphere.example.jdbc.poc.domain.RequestResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * POC service implement.
@@ -60,8 +67,52 @@ public class POCServiceImpl implements POCService {
     }
     
     @Override
-    public RequestResult insert() {
-        return RequestResult.ok();
+    public RequestResult insert(final Order order, final OrderItem orderItem) {
+        insertOrder(order);
+        orderItem.setOrderId(order.getOrderId());
+        insertItem(orderItem);
+        return createRequestResult(orderItem);
+    }
+    
+    @SuppressWarnings("unchecked")
+    private RequestResult createRequestResult(final OrderItem orderItem) {
+        Map<String, Object> newRecord = new HashMap<>();
+        newRecord.put("order_id", orderItem.getOrderId());
+        newRecord.put("order_item_id", orderItem.getOrderItemId());
+        RequestResult<Map<String, Object>> result = RequestResult.ok();
+        result.getDetails().add(newRecord);
+        return result;
+    }
+    
+    private void insertOrder(final Order order) {
+        final PreparedStatementCreator orderPrepareStatementCreator = new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement result = connection.prepareStatement(SQLConstant.INSERT_T_ORDER, Statement.RETURN_GENERATED_KEYS);
+                result.setInt(1, order.getUserId());
+                result.setString(2, order.getStatus());
+                return result;
+            }
+        };
+        KeyHolder holder = new GeneratedKeyHolder();
+        jdbcTemplate.update(orderPrepareStatementCreator, holder);
+        order.setOrderId(holder.getKey().longValue());
+    }
+    
+    private void insertItem(final OrderItem orderItem) {
+        final PreparedStatementCreator orderPrepareStatementCreator = new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement result = connection.prepareStatement(SQLConstant.INSERT_T_ORDER_ITEM, Statement.RETURN_GENERATED_KEYS);
+                result.setLong(1, orderItem.getOrderId());
+                result.setInt(2, orderItem.getUserId());
+                result.setString(3, orderItem.getStatus());
+                return result;
+            }
+        };
+        KeyHolder holder = new GeneratedKeyHolder();
+        jdbcTemplate.update(orderPrepareStatementCreator, holder);
+        orderItem.setOrderItemId(holder.getKey().longValue());
     }
     
     @Override
@@ -78,6 +129,7 @@ public class POCServiceImpl implements POCService {
     public RequestResult update(final String sql) {
         return RequestResult.ok();
     }
+    
     
     final void insertItem(final PreparedStatement preparedStatement, final OrderItem orderItem) throws SQLException {
         preparedStatement.setLong(1, orderItem.getOrderId());

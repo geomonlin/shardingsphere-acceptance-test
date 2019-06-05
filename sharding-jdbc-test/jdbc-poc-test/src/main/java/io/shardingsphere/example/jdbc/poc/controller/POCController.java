@@ -17,13 +17,17 @@
 
 package io.shardingsphere.example.jdbc.poc.controller;
 
+import io.shardingsphere.example.jdbc.poc.domain.Order;
+import io.shardingsphere.example.jdbc.poc.domain.OrderItem;
 import io.shardingsphere.example.jdbc.poc.domain.RequestResult;
 import io.shardingsphere.example.jdbc.poc.service.POCService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * POC controller.
@@ -50,5 +54,21 @@ public final class POCController {
     @RequestMapping(value = "/init")
     public RequestResult init() throws SQLException {
         return pocService.initEnvironment();
+    }
+    
+    @RequestMapping(value = "/insert/{count}")
+    @SuppressWarnings("unchecked")
+    public RequestResult insert(@PathVariable("count") int count) {
+        RequestResult<Map<String, Object>> result = new RequestResult<>("OK");
+        for (int i = 0; i < count; i++) {
+            Order order = new Order();
+            order.setUserId(i);
+            order.setStatus("poc-init");
+            OrderItem orderItem = new OrderItem();
+            orderItem.setUserId(i);
+            orderItem.setStatus("poc-init");
+            result.getDetails().addAll(pocService.insert(order, orderItem).getDetails());
+        }
+        return result;
     }
 }
