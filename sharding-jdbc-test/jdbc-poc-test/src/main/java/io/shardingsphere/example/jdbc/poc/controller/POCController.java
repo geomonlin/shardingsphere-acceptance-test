@@ -75,4 +75,19 @@ public final class POCController {
     public RequestResult query(String sql) {
         return pocService.select(sql);
     }
+    
+    @RequestMapping(value = "/delete")
+    public RequestResult delete(String sql) {
+        return pocService.delete(sql);
+    }
+    
+    @RequestMapping(value = "/update")
+    public RequestResult update(String sql) {
+        return pocService.update(sql);
+    }
+    
+    @RequestMapping(value = "/clean")
+    public RequestResult clear() throws SQLException {
+        return pocService.cleanEnvironment();
+    }
 }

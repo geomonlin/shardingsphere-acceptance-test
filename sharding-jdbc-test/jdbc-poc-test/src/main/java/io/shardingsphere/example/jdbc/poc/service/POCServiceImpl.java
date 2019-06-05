@@ -32,6 +32,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,13 +85,21 @@ public class POCServiceImpl implements POCService {
     }
     
     @Override
+    @SuppressWarnings("unchecked")
     public RequestResult delete(final String sql) {
-        return RequestResult.ok();
+        RequestResult result = new RequestResult("OK");
+        result.getSql().add(sql);
+        result.getDetails().addAll(Collections.singleton(jdbcTemplate.update(sql)));
+        return result;
     }
     
     @Override
+    @SuppressWarnings("unchecked")
     public RequestResult update(final String sql) {
-        return RequestResult.ok();
+        RequestResult result = new RequestResult("OK");
+        result.getSql().add(sql);
+        result.getDetails().addAll(Collections.singleton(jdbcTemplate.update(sql)));
+        return result;
     }
     
     @SuppressWarnings("unchecked")
