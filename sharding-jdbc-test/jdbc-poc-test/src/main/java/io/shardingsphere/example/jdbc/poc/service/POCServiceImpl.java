@@ -75,9 +75,11 @@ public class POCServiceImpl implements POCService {
     }
     
     @Override
+    @SuppressWarnings("unchecked")
     public RequestResult select(final String sql) {
-        RequestResult<Order> result = new RequestResult<>("OK");
-        result.getDetails().addAll(jdbcTemplate.queryForList(sql, Order.class));
+        RequestResult result = new RequestResult("OK");
+        result.getSql().add(sql);
+        result.getDetails().addAll(jdbcTemplate.queryForList(sql));
         return result;
     }
     
@@ -96,7 +98,7 @@ public class POCServiceImpl implements POCService {
         Map<String, Object> newRecord = new HashMap<>();
         newRecord.put("order_id", orderItem.getOrderId());
         newRecord.put("order_item_id", orderItem.getOrderItemId());
-        RequestResult<Map<String, Object>> result = RequestResult.ok();
+        RequestResult result = RequestResult.ok();
         result.getDetails().add(newRecord);
         result.getSql().addAll(Arrays.asList(SQLConstant.INSERT_T_ORDER, SQLConstant.INSERT_T_ORDER_ITEM));
         return result;

@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLException;
-import java.util.Map;
 
 /**
  * POC controller.
@@ -59,7 +58,7 @@ public final class POCController {
     @RequestMapping(value = "/insert/{count}")
     @SuppressWarnings("unchecked")
     public RequestResult insert(@PathVariable("count") int count) {
-        RequestResult<Map<String, Object>> result = new RequestResult<>("OK");
+        RequestResult result = new RequestResult("OK");
         for (int i = 0; i < count; i++) {
             Order order = new Order();
             order.setUserId(i);

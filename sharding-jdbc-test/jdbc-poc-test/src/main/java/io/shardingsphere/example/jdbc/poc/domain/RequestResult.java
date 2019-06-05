@@ -26,13 +26,13 @@ import java.util.LinkedList;
  *
  * @author zhaojun
  */
-public class RequestResult<T> {
+public class RequestResult {
     
     private String status;
     
     private Collection<String> sql = new LinkedHashSet<>();
     
-    private Collection<T> details = new LinkedList<>();
+    private Collection details = new LinkedList<>();
     
     public RequestResult(final String status) {
         this.status = status;
@@ -61,7 +61,7 @@ public class RequestResult<T> {
         this.status = status;
     }
     
-    public Collection<T> getDetails() {
+    public Collection getDetails() {
         return details;
     }
     
