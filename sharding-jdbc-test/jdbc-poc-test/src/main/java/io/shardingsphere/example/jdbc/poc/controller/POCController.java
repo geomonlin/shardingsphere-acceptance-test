@@ -18,6 +18,8 @@
 package io.shardingsphere.example.jdbc.poc.controller;
 
 import io.shardingsphere.example.jdbc.poc.domain.RequestResult;
+import io.shardingsphere.example.jdbc.poc.service.POCService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,6 +34,13 @@ import java.sql.SQLException;
 @RequestMapping(value = "/poc")
 public final class POCController {
     
+    private final POCService pocService;
+    
+    @Autowired
+    public POCController(final POCService pocService) {
+        this.pocService = pocService;
+    }
+    
     /**
      * init.
      *
@@ -40,6 +49,6 @@ public final class POCController {
      */
     @RequestMapping(value = "/init")
     public RequestResult init() throws SQLException {
-        return RequestResult.ok();
+        return pocService.initEnvironment();
     }
 }
