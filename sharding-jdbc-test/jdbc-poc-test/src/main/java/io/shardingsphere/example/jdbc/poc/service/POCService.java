@@ -33,11 +33,11 @@ public interface POCService {
     
     RequestResult initEnvironment() throws SQLException;
     
+    RequestResult initDict() throws SQLException;
+    
     RequestResult cleanEnvironment() throws SQLException;
     
     RequestResult insert(final Order order, final OrderItem item);
-    
-    RequestResult insert(final Dictionary dictionary);
     
     RequestResult select(final String sql);
     

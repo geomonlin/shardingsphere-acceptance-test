@@ -21,6 +21,7 @@ import io.shardingsphere.example.jdbc.poc.domain.Dictionary;
 import io.shardingsphere.example.jdbc.poc.domain.Order;
 import io.shardingsphere.example.jdbc.poc.domain.OrderItem;
 import io.shardingsphere.example.jdbc.poc.domain.RequestResult;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -56,11 +57,23 @@ public class POCServiceImpl implements POCService {
     public RequestResult initEnvironment() {
         jdbcTemplate.execute(SQLConstant.DROP_T_ORDER);
         jdbcTemplate.execute(SQLConstant.DROP_T_ORDER_ITEM);
-        jdbcTemplate.execute(SQLConstant.DROP_T_DICT);
         jdbcTemplate.execute(SQLConstant.CREATE_T_ORDER);
         jdbcTemplate.execute(SQLConstant.CREATE_T_ORDER_ITEM);
-        jdbcTemplate.execute(SQLConstant.CREATE_T_DICT);
         return RequestResult.ok();
+    }
+    
+    @Override
+    public RequestResult initDict() {
+        jdbcTemplate.execute(SQLConstant.DROP_T_DICT);
+        jdbcTemplate.execute(SQLConstant.CREATE_T_DICT);
+        RequestResult result = new RequestResult("OK");
+        for (int i = 0; i < 10; i++) {
+            Dictionary dictionary = new Dictionary();
+            dictionary.setCode(StringUtils.leftPad(String.valueOf(i), 2, "0"));
+            dictionary.setCodeName("name" + i);
+            result.add(insert(dictionary));
+        }
+        return result;
     }
     
     @Override
@@ -78,8 +91,7 @@ public class POCServiceImpl implements POCService {
         return createRequestResult(orderItem);
     }
     
-    @Override
-    public RequestResult insert(final Dictionary dictionary) {
+    private RequestResult insert(final Dictionary dictionary) {
         insertDict(dictionary);
         return createRequestResult(dictionary);
     }
