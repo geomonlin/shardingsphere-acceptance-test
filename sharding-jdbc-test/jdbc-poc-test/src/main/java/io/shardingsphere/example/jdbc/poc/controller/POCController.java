@@ -80,7 +80,7 @@ public final class POCController {
         RequestResult result = new RequestResult("OK");
         for (int i = 0; i < 10; i++) {
             Dictionary dictionary = new Dictionary();
-            dictionary.setCode(StringUtils.leftPad(String.valueOf(i), 3));
+            dictionary.setCode(StringUtils.leftPad(String.valueOf(i), 2, "0"));
             dictionary.setCodeName("name" + i);
             result.add(pocService.insert(dictionary));
         }

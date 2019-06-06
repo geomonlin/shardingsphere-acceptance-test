@@ -125,7 +125,7 @@ public class POCServiceImpl implements POCService {
     @SuppressWarnings("unchecked")
     private RequestResult createRequestResult(final Dictionary dict) {
         Map<String, Object> newRecord = new HashMap<>();
-        newRecord.put("dict_id", dict.getDictId());
+        newRecord.put("code", dict.getCode());
         RequestResult result = RequestResult.ok();
         result.getDetails().add(newRecord);
         result.getSql().add(SQLConstant.INSERT_T_DICT);
@@ -170,12 +170,9 @@ public class POCServiceImpl implements POCService {
                 PreparedStatement result = connection.prepareStatement(SQLConstant.INSERT_T_DICT, Statement.RETURN_GENERATED_KEYS);
                 result.setString(1, dict.getCode());
                 result.setString(2, dict.getCodeName());
-                result.setString(3, dict.getRemark());
                 return result;
             }
         };
-        KeyHolder holder = new GeneratedKeyHolder();
-        jdbcTemplate.update(dictPrepareStatementCreator, holder);
-        dict.setDictId(holder.getKey().longValue());
+        jdbcTemplate.update(dictPrepareStatementCreator);
     }
 }
