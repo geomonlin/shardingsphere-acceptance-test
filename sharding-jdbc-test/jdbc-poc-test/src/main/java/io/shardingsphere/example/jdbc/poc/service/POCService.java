@@ -17,6 +17,7 @@
 
 package io.shardingsphere.example.jdbc.poc.service;
 
+import io.shardingsphere.example.jdbc.poc.domain.Dictionary;
 import io.shardingsphere.example.jdbc.poc.domain.Order;
 import io.shardingsphere.example.jdbc.poc.domain.OrderItem;
 import io.shardingsphere.example.jdbc.poc.domain.RequestResult;
@@ -35,6 +36,8 @@ public interface POCService {
     RequestResult cleanEnvironment() throws SQLException;
     
     RequestResult insert(final Order order, final OrderItem item);
+    
+    RequestResult insert(final Dictionary dictionary);
     
     RequestResult select(final String sql);
     

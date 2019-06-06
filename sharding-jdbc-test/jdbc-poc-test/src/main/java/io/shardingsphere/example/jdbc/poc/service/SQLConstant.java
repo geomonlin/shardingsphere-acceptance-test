@@ -29,21 +29,24 @@ class SQLConstant {
     public static final String CREATE_T_ORDER_ITEM = "CREATE TABLE IF NOT EXISTS t_order_item "
         + "(order_item_id BIGINT NOT NULL AUTO_INCREMENT, order_id BIGINT NOT NULL, user_id INT NOT NULL, status VARCHAR(50), PRIMARY KEY (order_item_id))";
     
-    public static final String CREATE_T_DICTIONARY = "CREATE TABLE IF NOT EXISTS t_dictionary (code INT NOT NULL, code_name VARCHAR(200), remark VARCHAR(200), PRIMARY KEY (code))";
+    public static final String CREATE_T_DICT = "CREATE TABLE IF NOT EXISTS t_dictionary (dict_id BIGINT NOT NULL AUTO_INCREMENT," +
+        " code VARCHAR(20), code_name VARCHAR(200), remark VARCHAR(200), PRIMARY KEY (dict_id))";
     
     public static final String INSERT_T_ORDER = "INSERT INTO t_order (user_id, status) VALUES (?, ?)";
     
     public static final String INSERT_T_ORDER_ITEM = "INSERT INTO t_order_item (order_id, user_id, status) VALUES (?, ?, ?)";
     
-    public static final String DELETE_T_ORDER = "DELETE FROM t_order WHERE order_id=?";
-    
-    public static final String DELETE_T_ORDER_ITEM = "DELETE FROM t_order_item WHERE order_item_id=?";
+    public static final String INSERT_T_DICT = "INSERT INTO t_dictionary (code, code_name) VALUES (?, ?)";
     
     public static final String DROP_T_ORDER = "DROP TABLE IF EXISTS t_order";
     
     public static final String DROP_T_ORDER_ITEM = "DROP TABLE IF EXISTS t_order_item";
     
+    public static final String DROP_T_DICT = "DROP TABLE IF EXISTS t_dictionary";
+    
     public static final String TRUNCATE_T_ORDER = "TRUNCATE TABLE t_order";
     
     public static final String TRUNCATE_T_ORDER_ITEM = "TRUNCATE TABLE t_order_item";
+    
+    public static final String TRUNCATE_T_DICT = "TRUNCATE TABLE t_dictionary";
 }

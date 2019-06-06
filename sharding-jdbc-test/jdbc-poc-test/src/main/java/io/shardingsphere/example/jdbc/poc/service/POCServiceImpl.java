@@ -17,6 +17,7 @@
 
 package io.shardingsphere.example.jdbc.poc.service;
 
+import io.shardingsphere.example.jdbc.poc.domain.Dictionary;
 import io.shardingsphere.example.jdbc.poc.domain.Order;
 import io.shardingsphere.example.jdbc.poc.domain.OrderItem;
 import io.shardingsphere.example.jdbc.poc.domain.RequestResult;
@@ -55,8 +56,10 @@ public class POCServiceImpl implements POCService {
     public RequestResult initEnvironment() {
         jdbcTemplate.execute(SQLConstant.DROP_T_ORDER);
         jdbcTemplate.execute(SQLConstant.DROP_T_ORDER_ITEM);
+        jdbcTemplate.execute(SQLConstant.DROP_T_DICT);
         jdbcTemplate.execute(SQLConstant.CREATE_T_ORDER);
         jdbcTemplate.execute(SQLConstant.CREATE_T_ORDER_ITEM);
+        jdbcTemplate.execute(SQLConstant.CREATE_T_DICT);
         return RequestResult.ok();
     }
     
@@ -73,6 +76,12 @@ public class POCServiceImpl implements POCService {
         orderItem.setOrderId(order.getOrderId());
         insertItem(orderItem);
         return createRequestResult(orderItem);
+    }
+    
+    @Override
+    public RequestResult insert(final Dictionary dictionary) {
+        insertDict(dictionary);
+        return createRequestResult(dictionary);
     }
     
     @Override
@@ -113,6 +122,16 @@ public class POCServiceImpl implements POCService {
         return result;
     }
     
+    @SuppressWarnings("unchecked")
+    private RequestResult createRequestResult(final Dictionary dict) {
+        Map<String, Object> newRecord = new HashMap<>();
+        newRecord.put("dict_id", dict.getDictId());
+        RequestResult result = RequestResult.ok();
+        result.getDetails().add(newRecord);
+        result.getSql().add(SQLConstant.INSERT_T_DICT);
+        return result;
+    }
+    
     private void insertOrder(final Order order) {
         final PreparedStatementCreator orderPrepareStatementCreator = new PreparedStatementCreator() {
             @Override
@@ -142,5 +161,21 @@ public class POCServiceImpl implements POCService {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(orderPrepareStatementCreator, holder);
         orderItem.setOrderItemId(holder.getKey().longValue());
+    }
+    
+    private void insertDict(final Dictionary dict) {
+        final PreparedStatementCreator dictPrepareStatementCreator = new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement result = connection.prepareStatement(SQLConstant.INSERT_T_DICT, Statement.RETURN_GENERATED_KEYS);
+                result.setString(1, dict.getCode());
+                result.setString(2, dict.getCodeName());
+                result.setString(3, dict.getRemark());
+                return result;
+            }
+        };
+        KeyHolder holder = new GeneratedKeyHolder();
+        jdbcTemplate.update(dictPrepareStatementCreator, holder);
+        dict.setDictId(holder.getKey().longValue());
     }
 }

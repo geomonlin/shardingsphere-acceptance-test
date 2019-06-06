@@ -17,10 +17,12 @@
 
 package io.shardingsphere.example.jdbc.poc.controller;
 
+import io.shardingsphere.example.jdbc.poc.domain.Dictionary;
 import io.shardingsphere.example.jdbc.poc.domain.Order;
 import io.shardingsphere.example.jdbc.poc.domain.OrderItem;
 import io.shardingsphere.example.jdbc.poc.domain.RequestResult;
 import io.shardingsphere.example.jdbc.poc.service.POCService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shardingsphere.api.hint.HintManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -63,11 +65,24 @@ public final class POCController {
         for (int i = 0; i < count; i++) {
             Order order = new Order();
             order.setUserId(i);
-            order.setStatus("poc-init");
+            order.setStatus("01");
             OrderItem orderItem = new OrderItem();
             orderItem.setUserId(i);
-            orderItem.setStatus("poc-init");
+            orderItem.setStatus("01");
             result.add(pocService.insert(order, orderItem));
+        }
+        return result;
+    }
+    
+    @RequestMapping(value = "/init/dict")
+    @SuppressWarnings("unchecked")
+    public RequestResult initDict() {
+        RequestResult result = new RequestResult("OK");
+        for (int i = 0; i < 10; i++) {
+            Dictionary dictionary = new Dictionary();
+            dictionary.setCode(StringUtils.leftPad(String.valueOf(i), 3));
+            dictionary.setCodeName("name" + i);
+            result.add(pocService.insert(dictionary));
         }
         return result;
     }
