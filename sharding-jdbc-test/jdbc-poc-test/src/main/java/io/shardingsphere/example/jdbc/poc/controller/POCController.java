@@ -21,6 +21,7 @@ import io.shardingsphere.example.jdbc.poc.domain.Order;
 import io.shardingsphere.example.jdbc.poc.domain.OrderItem;
 import io.shardingsphere.example.jdbc.poc.domain.RequestResult;
 import io.shardingsphere.example.jdbc.poc.service.POCService;
+import org.apache.shardingsphere.api.hint.HintManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -72,7 +73,13 @@ public final class POCController {
     }
     
     @RequestMapping(value = "/query")
-    public RequestResult query(String sql) {
+    public RequestResult query(final String sql, final boolean masterOnly) {
+        if (masterOnly) {
+            try (HintManager hintManager = HintManager.getInstance()) {
+                hintManager.setMasterRouteOnly();
+                return pocService.select(sql);
+            }
+        }
         return pocService.select(sql);
     }
     
