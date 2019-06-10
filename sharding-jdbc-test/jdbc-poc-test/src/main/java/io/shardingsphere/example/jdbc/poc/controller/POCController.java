@@ -68,9 +68,11 @@ public final class POCController {
         for (int i = 0; i < count; i++) {
             Order order = new Order();
             order.setUserId(i);
+            order.setAmount(100 + i);
             order.setStatus("01");
             OrderItem orderItem = new OrderItem();
             orderItem.setUserId(i);
+            orderItem.setAmount(100 + i);
             orderItem.setStatus("01");
             result.add(pocService.insert(order, orderItem));
         }

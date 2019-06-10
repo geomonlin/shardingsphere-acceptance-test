@@ -35,7 +35,7 @@ class SQLConstant {
     
     public static final String INSERT_T_ORDER = "INSERT INTO t_order (user_id, amount, status) VALUES (?, ?, ?)";
     
-    public static final String INSERT_T_ORDER_ITEM = "INSERT INTO t_order_item (order_id, amount, user_id, status) VALUES (?, ?, ?, ?)";
+    public static final String INSERT_T_ORDER_ITEM = "INSERT INTO t_order_item (order_id, user_id, amount, status) VALUES (?, ?, ?, ?)";
     
     public static final String INSERT_T_DICT = "INSERT INTO t_dictionary (code, code_name) VALUES (?, ?)";
     
