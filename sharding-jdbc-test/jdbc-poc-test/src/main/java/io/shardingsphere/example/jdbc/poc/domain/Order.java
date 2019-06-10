@@ -27,6 +27,8 @@ public class Order implements Serializable {
     
     private int userId;
     
+    private double amount;
+    
     private String status;
     
     public long getOrderId() {
@@ -53,8 +55,16 @@ public class Order implements Serializable {
         this.status = status;
     }
     
+    public double getAmount() {
+        return amount;
+    }
+    
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+    
     @Override
     public String toString() {
-        return String.format("order_id: %s, user_id: %s, status: %s", orderId, userId, status);
+        return "Order{" + "orderId=" + orderId + ", userId=" + userId + ", amount=" + amount + ", status='" + status + '\'' + '}';
     }
 }

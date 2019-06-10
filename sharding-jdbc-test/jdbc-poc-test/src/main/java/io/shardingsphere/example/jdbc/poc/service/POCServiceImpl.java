@@ -150,7 +150,8 @@ public class POCServiceImpl implements POCService {
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
                 PreparedStatement result = connection.prepareStatement(SQLConstant.INSERT_T_ORDER, Statement.RETURN_GENERATED_KEYS);
                 result.setInt(1, order.getUserId());
-                result.setString(2, order.getStatus());
+                result.setDouble(2, order.getAmount());
+                result.setString(3, order.getStatus());
                 return result;
             }
         };
@@ -166,7 +167,8 @@ public class POCServiceImpl implements POCService {
                 PreparedStatement result = connection.prepareStatement(SQLConstant.INSERT_T_ORDER_ITEM, Statement.RETURN_GENERATED_KEYS);
                 result.setLong(1, orderItem.getOrderId());
                 result.setInt(2, orderItem.getUserId());
-                result.setString(3, orderItem.getStatus());
+                result.setDouble(3, orderItem.getAmount());
+                result.setString(4, orderItem.getStatus());
                 return result;
             }
         };
