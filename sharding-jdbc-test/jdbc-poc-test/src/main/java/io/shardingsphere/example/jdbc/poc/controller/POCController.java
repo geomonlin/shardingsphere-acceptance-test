@@ -28,6 +28,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * POC controller.
@@ -68,6 +73,30 @@ public final class POCController {
             orderItem.setUserId(i);
             orderItem.setStatus("01");
             result.add(pocService.insert(order, orderItem));
+        }
+        Map<String, Integer> recordSummary = getOrderRecord(result);
+        result.getDetails().clear();
+        result.getDetails().add(recordSummary);
+        return result;
+    }
+    
+    @SuppressWarnings("unchecked")
+    private Map<String, Integer> getOrderRecord(final RequestResult requestResult) {
+        Map<String, Set<Long>> recordGroup = new HashMap<>();
+        Collection<Map<String, Object>> collection = requestResult.getDetails();
+        for (Map<String, Object> map : collection) {
+            if (!recordGroup.containsKey("t_order")) {
+                recordGroup.put("t_order", new HashSet<Long>());
+            }
+            if (!recordGroup.containsKey("t_order_item")) {
+                recordGroup.put("t_order_item", new HashSet<Long>());
+            }
+            recordGroup.get("t_order").add((Long) map.get("order_id"));
+            recordGroup.get("t_order_item").add((Long) map.get("order_item_id"));
+        }
+        Map<String, Integer> result = new HashMap<>();
+        for (Map.Entry<String, Set<Long>> entry : recordGroup.entrySet()) {
+            result.put(entry.getKey(), entry.getValue().size());
         }
         return result;
     }
