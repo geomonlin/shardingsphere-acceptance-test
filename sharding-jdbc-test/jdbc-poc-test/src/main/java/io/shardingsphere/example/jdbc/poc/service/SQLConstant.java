@@ -25,13 +25,15 @@ package io.shardingsphere.example.jdbc.poc.service;
 class SQLConstant {
     
     public static final String CREATE_T_ORDER = "CREATE TABLE IF NOT EXISTS t_order (order_id BIGINT NOT NULL AUTO_INCREMENT," +
-        " user_id INT NOT NULL, amount decimal(18,2) NOT NULL, status VARCHAR(50), PRIMARY KEY (order_id))";
+        " user_id INT NOT NULL, amount decimal(18,2) NOT NULL, status VARCHAR(50), create_time datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)," +
+        " PRIMARY KEY (order_id))";
     
     public static final String CREATE_T_ORDER_ITEM = "CREATE TABLE IF NOT EXISTS t_order_item (order_item_id BIGINT NOT NULL AUTO_INCREMENT," +
-        " order_id BIGINT NOT NULL, amount decimal(18,2) NOT NULL, user_id INT NOT NULL, status VARCHAR(50), PRIMARY KEY (order_item_id))";
+        " order_id BIGINT NOT NULL, amount decimal(18,2) NOT NULL, user_id INT NOT NULL, status VARCHAR(50), create_time datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)," +
+        " PRIMARY KEY (order_item_id), KEY idx_order(order_id))";
     
     public static final String CREATE_T_DICT = "CREATE TABLE IF NOT EXISTS t_dictionary (dict_id BIGINT NOT NULL AUTO_INCREMENT," +
-        " code VARCHAR(20), code_name VARCHAR(200), remark VARCHAR(200), PRIMARY KEY (dict_id))";
+        " code VARCHAR(20), code_name VARCHAR(200), remark VARCHAR(200), create_time datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), PRIMARY KEY (dict_id))";
     
     public static final String INSERT_T_ORDER = "INSERT INTO t_order (user_id, amount, status) VALUES (?, ?, ?)";
     
