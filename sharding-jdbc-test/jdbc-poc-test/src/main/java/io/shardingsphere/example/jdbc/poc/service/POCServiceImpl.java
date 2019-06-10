@@ -59,7 +59,9 @@ public class POCServiceImpl implements POCService {
         jdbcTemplate.execute(SQLConstant.DROP_T_ORDER_ITEM);
         jdbcTemplate.execute(SQLConstant.CREATE_T_ORDER);
         jdbcTemplate.execute(SQLConstant.CREATE_T_ORDER_ITEM);
-        return RequestResult.ok();
+        RequestResult result = RequestResult.ok();
+        result.getSql().addAll(Arrays.asList(SQLConstant.DROP_T_ORDER, SQLConstant.DROP_T_ORDER_ITEM, SQLConstant.CREATE_T_ORDER, SQLConstant.CREATE_T_ORDER_ITEM));
+        return result;
     }
     
     @Override
