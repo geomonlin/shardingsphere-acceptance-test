@@ -22,6 +22,7 @@ import io.shardingsphere.example.repository.api.senario.JPATransactionServiceSce
 import io.shardingsphere.example.repository.api.trace.SpringResultAssertUtils;
 import io.shardingsphere.example.repository.jpa.service.SpringEntityService;
 import io.shardingsphere.example.repository.jpa.service.SpringEntityTransactionService;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,7 @@ public class SpringNamespaceShardingMasterSlaveTest {
     }
     
     @Test
+    @Ignore
     public void assertTransactionService() {
         JPATransactionServiceScenario scenario = new JPATransactionServiceScenario(transactionService);
         scenario.process();

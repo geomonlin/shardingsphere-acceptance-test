@@ -22,6 +22,7 @@ import io.shardingsphere.example.repository.api.senario.AnnotationTractionServic
 import io.shardingsphere.example.repository.api.trace.SpringResultAssertUtils;
 import io.shardingsphere.example.repository.mybatis.service.SpringPojoService;
 import io.shardingsphere.example.repository.mybatis.service.SpringPojoTransactionService;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,7 @@ public class SpringNamespaceLocalZookeeperShardingMasterSlaveTest extends Spring
     }
     
     @Test
+    @Ignore
     public void assertTransactionService() {
         AnnotationTractionServiceScenario scenario = new AnnotationTractionServiceScenario(transactionService);
         scenario.process();
