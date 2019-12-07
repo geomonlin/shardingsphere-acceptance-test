@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.example.spring.boot.mybatis.nodep;
+package org.apache.shardingsphere.test.proxy.spring.boot.mybatis;
 
 import org.apache.shardingsphere.example.repository.api.senario.AnnotationCommonServiceScenario;
 import org.apache.shardingsphere.example.repository.api.senario.AnnotationTractionServiceScenario;
@@ -32,8 +32,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SpringBootTestMain.class)
-@ActiveProfiles("sharding-databases-tables")
-public class SpringBootShardingDatabasesTablesTest {
+@ActiveProfiles("sharding-tables")
+public class SpringBootShardingTablesTest {
     
     @Autowired
     private SpringPojoService commonService;
@@ -46,7 +46,7 @@ public class SpringBootShardingDatabasesTablesTest {
     public void assertCommonService() {
         AnnotationCommonServiceScenario scenario = new AnnotationCommonServiceScenario(commonService);
         scenario.process();
-        SpringResultAssertUtils.assertShardingDatabaseAndTableResult(commonService);
+        SpringResultAssertUtils.assertShardingTableResult(commonService);
     }
     
     @Test

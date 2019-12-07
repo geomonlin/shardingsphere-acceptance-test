@@ -15,13 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.example.spring.boot.mybatis.nodep;
+package org.apache.shardingsphere.test.jdbc.spring.boot.mybatis;
 
 import org.apache.shardingsphere.example.repository.api.senario.AnnotationCommonServiceScenario;
 import org.apache.shardingsphere.example.repository.api.senario.AnnotationTractionServiceScenario;
 import org.apache.shardingsphere.example.repository.api.trace.SpringResultAssertUtils;
 import org.apache.shardingsphere.example.repository.mybatis.service.SpringPojoService;
 import org.apache.shardingsphere.example.repository.mybatis.service.SpringPojoTransactionService;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +32,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = org.apache.shardingsphere.example.spring.boot.mybatis.nodep.SpringBootTestMain.class)
-@ActiveProfiles("master-slave")
-public class SpringBootMasterSlaveTest {
+@SpringBootTest(classes = SpringBootTestMain.class)
+@ActiveProfiles("sharding-master-slave")
+public class SpringBootShardingMasterSlaveTest {
     
     @Autowired
     private SpringPojoService commonService;
@@ -50,6 +51,7 @@ public class SpringBootMasterSlaveTest {
     }
     
     @Test
+    @Ignore
     public void assertTransactionService() {
         AnnotationTractionServiceScenario scenario = new AnnotationTractionServiceScenario(transactionService);
         scenario.process();

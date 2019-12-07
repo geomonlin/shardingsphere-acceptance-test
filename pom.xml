@@ -12,6 +12,7 @@
         <module>common-repository</module>
         <module>example-utility</module>
         <module>sharding-jdbc-test</module>
+        <module>sharding-proxy-test</module>
     </modules>
     
     <properties>
