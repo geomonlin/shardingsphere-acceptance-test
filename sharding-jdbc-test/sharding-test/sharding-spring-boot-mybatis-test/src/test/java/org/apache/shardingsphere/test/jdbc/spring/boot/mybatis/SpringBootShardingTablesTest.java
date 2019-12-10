@@ -48,11 +48,4 @@ public class SpringBootShardingTablesTest {
         scenario.process();
         SpringResultAssertUtils.assertShardingTableResult(commonService);
     }
-    
-    @Test
-    public void assertTransactionService() {
-        AnnotationTractionServiceScenario scenario = new AnnotationTractionServiceScenario(transactionService);
-        scenario.process();
-        SpringResultAssertUtils.assertTransactionServiceResult(transactionService);
-    }
 }
